@@ -1,0 +1,20 @@
+Mar 28,2009:9:40am Release Borednomore BETA.
+Sun 29,2009:2:27pm Fix delay when downloading files.
+Sun 29,2009:2:29pm Change BETA from bash to sh coding.
+Mon 30,2009:07:17am Add support for flag -U <URI> to get different URI
+Mon 30,2009:07:17am Add -help 
+Mon 30,2009:07:17am Add support for Delay -d <seconds> time between frames (wallpapers)
+Mon 30,2009:07:17am Add -X <xml-file> to change the default filename for XML file
+Mon 30,2009:07:17am Add -v to toogle verbose mode
+Mon 30,2009:07:17am Add function debugmsg(), programme aid.
+Mon 30,2009:07:17am Add -A flag, Accumulative files, never erase old ones.
+Mon 30,2009:11:14am Add -r -D -c -V -N  Flags.
+Thu 09,2009:03:56pm Add function buildXML
+Thu 09,2009:03:56pm Fix issue with intax error when user supplie more then one valid argument
+Thu 09,2009:03:56pm Change call to debug  mode from -D to -debug
+Thu 09,2009:03:56pm Add -r flag to regenerate new XML file.
+Thu 09,2009:03:56pm Add runXML function
+Thu 09,2009:03:56pm add -R flag to setup a XML file already existing.
+Fri 10,2009:03:00pm Add -m <files> maximum number of files to download
+Fri 10,2009:03:42pm Add -unset flag to deinstall wallpapers
+Sat 10, October 2009:05:05pm Modify arguments and add flickr, google support, also fix some bugs, add random selection, add -force, -download flags.

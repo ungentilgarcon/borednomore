@@ -1,0 +1,34 @@
+Borednomore Ver. 0.02b
+dzupd@yahoo.com
+WebBlog: http://zzer.wordpress.com
+Sat Mar 28, 2009 at 10am
+
+Este programa cambia aleatoriamente tu fondo de pantalla, las fotos las baja automaticamente de www.flickr.com, haciendo este programa bastante divertido.
+
+INSTALACION:
+
+Descargue el programa de:
+http://zzer.wordpress.com 
+
+Descomprimelo:
+tar xvf Borednomore
+cd Borednomore
+
+Si desea instalarlo para todos los usuarios, hagase root y:
+
+cp Borednomore /usr/bin/Borednomore
+chmod +x /usr/bin/Borednomore
+
+O simplemente ejecutelo:
+./Borednomore
+
+Si lo desea pongalo en crontab!, de es forma descargara nuevas fotos automaticamente, recuerde que por defecto la duracion de cada wallpaper es de 180 segundos (3 minutos), multiplique por 20 (que son el numero de fondos de pantalla que descargara cada vez), eso es 1 hr, ponga su crontab a ejecutar cada hora!
+
+Para editar su crontab:
+crontab -e
+
+0 1 * * * /path/to/your/Borednomore/Borednomore
+
+Eso ejecutara el programa cada hora.
+
+Gracias por usar este programa, que se divierta!

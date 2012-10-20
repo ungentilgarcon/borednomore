@@ -1,0 +1,61 @@
+Borednomore Ver. 0.02b
+dzupd@yahoo.com
+WebBlog: http://zzer.wordpress.com
+Sat Mar 28, 2009 at 10am
+
+This script change randomly your wallpaper from pictures in www.flickr.com, the pictures are supply random automaticly from the site,  that make this little script fun to view.
+
+REQUIREMENTS: Linux Based System with gconf2, wget and lynx
+
+To install wget and lynx, depending in your flavor of linux you use try:
+
+Linux DEBIAN and sons (ubuntu, etc) based:
+apt-get update; apt-get upgrade
+apt-get install wget lynx
+
+Linux RedHat and sons, use
+yum -i wget lynx
+
+Other Linuxes try manual :)  
+
+INSTALL:
+
+Download the file from:
+http://zzer.wordpress.com 
+
+Unzip it:
+tar xvf Borednomore
+cd Borednomore
+
+if you like to be available to everybody on the system, become root and:
+
+cp Borednomore /usr/bin/Borednomore
+chmod +x /usr/bin/Borednomore
+
+Or simple execute the program:
+./Borednomore
+
+If you wish to build a slideshow with your own pictures, copy
+your pictures to the subdirectory wallpaper, you can use any
+graphic file extention you wish (i hope), then run:
+
+./Borednomore -download 
+
+To see help, try:
+
+./Borednomore -help
+
+Note: I hope this little script will work for you, please 
+feed me back with your bugs or suggestions via email, thank you
+
+If you like put it on crontab! that way will download new files automaticly, remember by default the wallpaper last 180 seconds (3 minutes), multiply that by 20 (number of wallpapers the script will download at one time), that equals 1 hr, set your crontab to 1hr and you are in business.
+To edit your crontab do:
+crontab -e
+
+and add:
+0 1 * * * /path/to/your/Borednomore/Borednomore
+
+This will run every 60 minutes.
+
+
+Thank you for using this program, have fun!

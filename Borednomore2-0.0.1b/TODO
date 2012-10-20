@@ -1,0 +1,5 @@
+Sat Oct 10 2009: when call $wallpaper_directory with no files. 
+./Borednomore -eraseold
+rm: cannot remove `wallpapers/*': No such file or directory
+Status: OPEN
+

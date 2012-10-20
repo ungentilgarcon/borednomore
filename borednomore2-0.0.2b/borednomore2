@@ -1,0 +1,158 @@
+#!/bin/bash
+# -*- coding: utf-8 -*-
+###
+# Copyright (c) 2012, Alex R Rodriguez
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#   * Redistributions of source code must retain the above copyright notice,
+#     this list of conditions, and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright notice,
+#     this list of conditions, and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#   * Neither the name of the author of this software nor the name of
+#     contributors to this software may be used to endorse or promote products
+#     derived from this software without specific prior written consent.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+# Comments welcome: dzupd@yahoo.com
+#
+#	 This script tested in Gnome 3
+#
+PROGNA="`basename $0`"
+VERSION="0.0.2b"
+XMLFILE="borednomore2.xml"
+LASTFILE="borednomore.jpg"
+TRANSITION_TYPE="overlay"
+SECONDS=120
+TRANSITION_TIME=$(( SECONDS / 4 ))
+SECONDS=$(( SECONDS - TRANSITION_TIME ))
+PATHWALLPAPERS=$(pwd)
+DOWNLOADS=10
+DEFAULTSEARCH="wallpapers+HD"
+IMAGESIZE="xxlarge"
+# date related
+year=`date +%Y`
+month=`date +%m`
+day=`date +%d`
+hour='0'
+minute='0'
+displayhelp() 
+{
+    echo "Usage: $PROGNA [-hvU] [-s <seconds>] [-d <downloads>] [-c <SEARCH>]  [-i <IMAGE-SIZE>][-x <XMLFILE>] "
+    echo "-h This help"
+    echo "-v Version"
+    echo "-U Unset wallpapers"
+    echo "-s Seconds between wallpapers (default: $SECONDS)"
+    echo "-t Seconds to overlay image (default: $TRANSITION_TIME)"
+    echo "   or 1/4 of time of -s"
+    echo "-d Number files to download, (default:$DOWNLOADS)"
+    echo "-c Search criteria, (default: $DEFAULTSEARCH)"
+    echo "-i Image size, (default: $IMAGESIZE)"
+    echo "-x xmlfile (default: $XMLFILE)"
+}
+
+xmlparse()
+{
+  #Remove old XML
+  [[ -e $XMLFILE ]] && rm $XMLFILE
+  #purge $XMLFILE
+  : > $XMLFILE  
+  echo "<!-- $PROGNA - $VERSION -->" >> $XMLFILE
+  echo "<!-- TimeStamp: `date +%s`   -->" >> $XMLFILE
+  echo "<!--      User: $USER         -->" >> $XMLFILE
+  echo "<!--                         -->" >> $XMLFILE
+  echo "<background>" >> $XMLFILE
+  echo " <starttime>" >> $XMLFILE	
+  echo "  <year>$year</year>" >> $XMLFILE
+  echo "  <month>$month</month>" >> $XMLFILE
+  echo "  <day>$day</day>" >> $XMLFILE
+  echo "  <hour>$hour</hour>" >> $XMLFILE
+  echo "  <minute>$minute</minute>" >> $XMLFILE
+  echo "  <second>01</second>" >> $XMLFILE
+  echo " </starttime>" >> $XMLFILE
+  echo "" >> $XMLFILE
+
+  #calculate LASTFILE wallpaper
+  TOTALWALLPAPERS=0
+  #find out last file
+  for file in $PATHWALLPAPERS/*.jpg; do LASTFILE=$file; let TOTALWALLPAPERS+=1; done
+  if [ $TOTALWALLPAPERS = 1 ]
+  then
+        echo "no files found!"
+        exit
+  fi
+  let i=0
+  # start adding each wallpaper
+  for file in $PATHWALLPAPERS/*.jpg
+  do
+        let i+=1
+        if [ $i != 0 ] && [ $i != -1 ]
+        then
+	      echo "" >> $XMLFILE
+              echo " <!-- wallpaper "$i" -->" >> $XMLFILE
+              echo "  <static>" >> $XMLFILE
+              echo "   <duration>$SECONDS</duration>" >> $XMLFILE
+              echo "   <file>$LASTFILE</file>" >> $XMLFILE
+              echo "  </static>" >> $XMLFILE
+              echo "" >> $XMLFILE
+              echo "  <transition type=\"$TRANSITION_TYPE\">" >> $XMLFILE
+              echo "   <duration>$TRANSITION_TIME</duration>" >> $XMLFILE
+              echo "   <from>$LASTFILE</from>" >> $XMLFILE
+              echo "   <to>$file</to>" >> $XMLFILE
+              echo "  </transition>" >> $XMLFILE
+#	      echo "" >> $XMLFILE
+        fi
+        LASTFILE=$file
+  done
+  echo "</background>" >> $XMLFILE
+}
+
+unsetxml() { echo "Unsetting $XMLFILE";gsettings reset org.gnome.desktop.background picture-uri; }
+
+# main program
+
+if (( $# == 0 )) ; then echo "using defaults ..." ; else 
+	#Process the arguments
+	while getopts d:s:t:c:i:c:x:Uhv opt
+	do
+   		case "$opt" in
+       			h) displayhelp;exit 0;;
+			v) echo "$PROGNA $VERSION";exit 0;;
+			U) unsetxml;exit 0;;
+      			s) SECONDS=$OPTARG
+                            TRANSITION_TIME=$(( SECONDS / 4 ))
+                            SECONDS=$(( SECONDS - TRANSITION_TIME ));;
+                        t) TRANSITION_TIME=$OPTARG;;
+      			d) DOWNLOADS=$OPTARG;;
+			c) DEFAULTSEARCH=$OPTARG;;
+			i) IMAGESIZE=$OPTARG;;
+     			x) XMLFILE=$OPTARG;; 
+     		\?) displayhelp;exit 0;;
+   		esac
+	done
+fi
+
+for i in $(seq $DOWNLOADS);do 
+	echo "Downloading $i of $DOWNLOADS"
+	wget $(wget -O- -U "" "http://images.google.com/images?imgsz=$IMAGESIZE&q=$DEFAULTSEARCH&start=$(($RANDOM%900+100))" --quiet | grep -oe 'http://[^"]*\.jpg' | head -1);
+done
+echo "Slideshow every $SECONDS seconds"
+echo "building xml file: $XMLFILE"
+xmlparse
+echo "Setting up slideshow, using $XMLFILE"
+gsettings set org.gnome.desktop.background picture-uri file://///$PATHWALLPAPERS/$XMLFILE
+echo "done."

@@ -1,0 +1,709 @@
+#!/bin/bash
+# -*- coding: utf-8 -*-
+###
+# Copyright (c) 2009, Alex R Rodriguez
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#   * Redistributions of source code must retain the above copyright notice,
+#     this list of conditions, and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright notice,
+#     this list of conditions, and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#   * Neither the name of the author of this software nor the name of
+#     contributors to this software may be used to endorse or promote products
+#     derived from this software without specific prior written consent.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+###
+
+# Borednomore Ver. 0.01
+# A auto randomizer of wallpapers written in bash.
+# Gets wallpapers at random from flick.com, google
+# personal folder or other URI's, then builds a simple 
+# slide show to be use as desktop backgroud.
+#
+# dzupd@yahoo.com
+# Sat Mar 28,2009 at 9:40am
+#
+
+pid=$$  # get PID
+
+# define PROGNA
+PROGNA="Borednomore"
+VERSION="0.02b"
+DESCR="
+Creates a slide-show with wallpapers 
+from google.com, flickr.com, custom URI randomly
+or if prefer from your own pictures by copy them. 
+to the wallpaper directory and run:
+
+./`basename $0` -download 
+"
+WEBSITE="http://zzer.wordpress.com"
+
+# Credits - Please dont remove -
+AUTHOR="Alex R. Rodriguez"
+EMAIL="dzupd@yahoo.com"
+NOTES="This is the backend script."
+CONTRIBUTORS="Cousteau (freenode @ #ubuntu-es)"
+
+isdebug=0         # 1 sets debug mode (please use 0 to default)
+isverbose=0       # 1 sets verbose mode (please use 0 to default)
+ 
+
+# default search link, if empty asume this for default.
+http_string="http://www.flickr.com/photos/"
+
+# make dir program $HOME
+dir="`pwd`"
+
+# make my last view. NOT-USED
+last="`pwd`/Borednomore.gif"
+
+# make lenght of time to display for each wallpaper
+# by default is whatever number is there or number/60 = minutes.
+seconds="180.0"
+
+# make i an integer with 0 as the value to be use as referense later.
+i=0
+
+# Download Maximun number of Files (can be change with the -max flag).
+dmax=10 	
+
+#
+# set-up  variables.
+
+# CONSTANTS
+_WALLPAPER_DIRECTORY='wallpapers'   # dir. where wallpapers are located.
+_TEMP_DIRECTORY='tmp'                # dir. where temporal downloads takes place
+xml='Borednomore.xml'
+logfile='Borednomore.log'
+transition_type="overlay"          # way the walpapers going to overlap default: overlay
+
+# date related
+year=`date +%Y`
+month=`date +%m`
+day=`date +%d`
+hour='0'
+minute='0'
+
+# Misc. variables
+arg=""
+syntax=1   	 # set default set to NO syntax error
+#log=0   	 # useg for log
+hos=0   	 # used for hostname or ip
+#con=0   	 # use as counter
+download=1 	 # do download new files.
+FORCE_TO=0   # 0 = random, 1 = google, 2 = flickr
+LIST_ERRORS=0 # if 1 never exits when error function is call, used with -errorlist
+NUMBER_OF_ERRORS=9  #set this to the number of error you have in function error()
+
+# little debug function. 
+debugmsg() 
+{ 
+ [[ $isdebug = 1 ]] && echo "$@" 
+}
+
+#define little verbose function
+verbose() 
+{
+ [[ $isverbose = 1 ]] && echo "$@" 
+}
+
+#exit program and return value to shell
+exitwith()
+{
+    debugmsg "Terminating program (return $@)"
+    exit "$@"
+}
+
+#little error function
+error()
+{
+        error_number=$@
+        [[ $LIST_ERRORS = 0 ]] && SYNTAX_ERROR="Syntax error:" || SYNTAX_ERROR=""
+        [[ $LIST_ERRORS = 0 ]] && FATAL_ERROR="Fatal error:" || FATAL_ERROR=""
+        [[ $LIST_ERRORS = 0 ]] && SIMPLE_ERROR="Error:" || SIMPLE_ERROR=""
+        ERROR_MSG=""
+
+        case $error_number in
+                1) 
+                        ERROR_MSG="$FATAL_ERROR Never run this tool as root."
+                ;;
+                2)
+                        ERROR_MSG="$FATAL_ERROR More files required '$_WALLPAPER_DIRECTORY'."
+                ;;
+                3)
+                        ERROR_MSG="$SIMPLE_ERROR File not found."
+                ;;
+                4)
+                        ERROR_MSG="$SYNTAX_ERROR Expecting a number."
+                ;;
+                5)
+                        ERROR_MSG="$SIMPLE_ERROR Value out of range."
+                ;;
+                6)
+                        ERROR_MSG="$SYNTAX_ERROR Unreconize arguments."
+                ;;
+                7)
+                        ERROR_MSG="$FATAL_ERROR Required 'wget' or/and 'lynx'."
+                ;;
+                8)
+                        ERROR_MSG="$FATAL_ERROR Network is unreachable."
+                ;;
+                9)
+                        ERROR_MSG="$SIMPLE_ERROR Please name this tool '$PROGNA'"
+                ;;
+                *)  
+                        # if enything else return 255
+                        ERROR_MSG="$SIMPLE_ERROR Unreconize error"
+                        error_number=255
+                ;;
+        esac
+        echo $ERROR_MSG
+        [[ $LIST_ERRORS = 0 ]] && exitwith $error_number
+}
+
+#check for root
+if [ "X`id -u`" = "X0" -a -z "$RUN_AS_USER" ]
+then
+    error 1
+fi
+
+# check if tools not called $PROGNA
+[[ "`basename $0`" != "$PROGNA" ]] && error 9
+
+#returns program name and version
+progna()
+{
+    echo "$PROGNA-$VERSION"
+}
+
+#Display programming credits
+credits()
+{
+    echo "$DESCR"
+    echo "      Author: $AUTHOR ( $EMAIL )"
+    echo "              $WEBSITE"
+    echo "Contributors: $CONTRIBUTORS"
+    echo "       Notes: $NOTES"
+}
+
+#build a new XML file in variable $dXML
+buildXML()
+{
+  debugmsg "Building XML file: $bXML"
+  # purge XML files
+  debugmsg "Removing old XML"
+  [[ -e $bXML ]] && rm $bXML
+
+  #purge $bXML
+  : > $bXML
+  
+  debugmsg "Done, creating new XML"
+  # begin building my custom xml file
+  verbose "Adding header"
+  echo "<!-- $PROGNA - $VERSION -->" >> $bXML
+  echo "<!-- TimeStamp: `date +%s`   -->" >> $bXML
+  echo "<!--      User: $USER         -->" >> $bXML
+  echo "<!--                         -->" >> $bXML
+  echo "<background>" >> $bXML
+  echo "<starttime>" >> $bXML	
+  echo "<year>$year</year>" >> $bXML
+  echo "<month>$month</month>" >> $bXML
+  echo "<day>$day</day>" >> $bXML
+  echo "<hour>$hour</hour>" >> $bXML
+  echo "<minute>$minute</minute>" >> $bXML
+  echo "<second>01</second>" >> $bXML
+  echo "</starttime>" >> $bXML
+  echo "" >> $bXML
+
+  #calculate last wallpaper
+  numwallpapers=0
+  for file in $dir/$_WALLPAPER_DIRECTORY/*
+  do 
+        last=$file 
+        numwallpapers=$[$numwallpapers+1]
+
+  done
+  if [ $numwallpapers = 1 ]
+  then
+        error 2
+  else
+    verbose "Found some wallpapers, preparing"
+  fi
+
+  # start adding each wallpaper
+  for file in $dir/$_WALLPAPER_DIRECTORY/*.jpg
+  do
+        i=$[$i+1]
+        if [ $i != 0 ] && [ $i != -1 ]
+        then
+	          verbose "Add($i)$file"
+              echo "<!-- wallpaper "$i" -->" >> $bXML
+              echo "<transition type=\"$transition_type\">" >> $bXML
+              echo "<duration>$seconds</duration>" >> $bXML
+              echo "<from>$last</from>" >> $bXML
+              echo "<to>$file</to>" >> $bXML
+              echo "</transition>" >> $bXML
+	          echo "" >> $bXML
+        fi
+        last=$file
+  done
+  echo "</background>" >> $bXML
+  verbose "XML creation OK"
+ #end buildxml()
+}
+
+#unset XML file
+unsetXML()
+{
+  verbose "Uninstalling $bXML"
+  gconf=`which gconftool-2`
+  if [ "$gconf" != "" ]
+  then
+    debugmsg "Using $gconf"
+    $gconf --unset /desktop/gnome/background/picture_filename
+    echo "Success!! Wallpapers deinstalled."
+  else
+    debugmsg "Looks like we have no way tu run $gconf, sending error to user."
+    echo "Sorry I can't set up any wallpapers, try to run:"
+    echo "$gconf --unset /desktop/gnome/background/picture_filename"
+    echo "Please manually un-set the background"
+  fi
+# end runXML
+}
+
+#runs /  set-up a existing XML file as the slide show
+runXML()
+{
+  verbose "Installing $bXML"
+  gconf=`which gconftool-2`
+  if [ "$gconf" != "" ]
+  then
+    debugmsg "Using $gconf"
+    $gconf --type string --set /desktop/gnome/background/picture_filename "$bXML"
+    echo "Success!! Wallpapers installed."
+    echo 'Will rotate wallpapers every '$seconds' seconds'
+  else
+    debugmsg "Looks like we have no way tu run $gconf, sending error to user."
+    echo "Sorry I can't set up any wallpaper, try to run:"
+    echo "$gconf --type string --set /desktop/gnome/background/picture_filename $bXML"
+    echo "Manually set this background using the command above."
+  fi
+# end runXML
+}
+
+# setup flags
+mfd=0		   # Flag Maximum number of files to download
+sec=0   	   # seconds flag
+wallflag=0     # Change _WALLPAPER_DIRECTORY flag
+myf=0   	   # especting flag
+xfl=0   	   # xml flag
+rxm=0   	   # flag to Run XMl file
+force_flag=0   # force flag
+numarg=0   	   # flag to be use as a counter of arguments, to check sintaxis.
+noreq=1 	   # no recognize command flag
+defaultflag=0  # default fag
+accumulative=1 # Accumulative mode flag
+
+if [ "$*" != "" ]; then
+    # Process Arguments
+    for arg in "$@"
+    do
+	numarg=$[$numarg+1]
+        noreq=1
+        debugmsg "Processing [$arg]"
+        if [ "$arg" = "-help" ]
+        then
+            echo "Usage: `basename $0` <arguments>"
+            echo ""
+            echo " -delay ###      : sets number of seconds between images (default: $seconds)"
+            echo " -max ###        : sets maximum number of files to download (default: $dmax)"
+            echo " -force #        : force URI, 0 = random (default), 1=google, 2=flickr"
+            echo " -eraseold       : erase old files (default: Keep files)"
+            echo " -download       : do not download new files  (default: download files)"
+            echo " -wall <dir>     : wallpapers location (default $_WALLPAPER_DIRECTORY)"
+            echo " -xmlfile <file> : changes filename to create (default: $xml)"
+            echo " -runxml <file>  : run existing xml file"
+	        echo " -regenerate     : rebuild xml file and exits"
+	        echo " -unset          : deinstall wallpapers"
+            echo " -credits        : print credits and exits"
+            echo " -version        : prints version and exits"
+            echo " -progna         : prints progna information and exits"
+            echo " -listerror      : list the error number and error messages."
+            echo " -debug          : debug mode"
+            echo " -v              : verbose mode"
+            echo " -help           : this help"
+            # finish and exit
+            exitwith 0  # exit program with code 0
+        fi
+        if [ "$arg" = "-version" ]
+        then
+            debugmsg "Print Version"
+            echo "$VERSION"
+            exitwith 0
+        fi
+        if [ "$arg" = "-progna" ]
+        then
+            debugmsg "Print ProgNa"
+            progna
+            exitwith 0
+        fi
+
+        if [ "$arg" = "-credits" ]
+        then
+            debugmsg "Print Credits"
+            progna
+            credits
+            exitwith 0
+        fi
+        if [ "$arg" = "-debug" ]
+        then
+            verbose "Debug Mode"
+            isdebug=1
+            noreq=0
+            numarg=$[$numarg-1]
+        fi
+        if [ "$arg" = "-regenerate" ]
+        then
+            debugmsg "Regenerate XML file"
+            verbose "reGenering XML file: $xml"
+            bXML="$dir/$xml"
+	        buildXML
+	        verbose "XML building OK, exiting"
+	        exitwith 0
+        fi
+        if [ "$arg" = "-unset" ]
+        then
+            debugmsg "User toggle unset XML file"
+            verbose "Deinstalling XML file: $xml"
+            bXML="$dir/$xml"
+	        unsetXML
+	        verbose "Done, thank you for using this program."
+	        exitwith 0
+        fi
+
+        if [ "$arg" = "-v" ]
+        then
+            debugmsg "User toggle Verbose mode"
+            noreq=0
+            isverbose=1
+	        numarg=$[$numarg-1]
+        fi
+
+        if [ "$arg" = "-listerror" ]
+        then
+                # need a for loop from 1 to NUMBER_OF_ERRORS
+                LIST_ERRORS=1
+                debugmsg "Error List"
+                for i in `echo {1..10}`; do [[ $i != 10 ]] && echo "$i: `error $i`" || echo "255: `error 255`" ; done
+	            exitwith 1
+        fi
+
+        if [ "$arg" = "-eraseold" ]
+        then
+            debugmsg "Erase old files"
+            noreq=0
+            accumulative=0
+            verbose "Erasing old files"
+            [[ -d $_WALLPAPER_DIRECTORY ]] && [[ -df $_WALLPAPER_DIRECTORY ]] && rm $_WALLPAPER_DIRECTORY/*;exitwith 0 || error 3 
+            error 3
+        fi
+        if [ "$arg" = "-download" ]
+        then
+            debugmsg "No download"
+            noreq=0
+            download=0
+	        numarg=$[$numarg-1]
+        fi
+    
+        if [ "$arg" = "-wall" ]
+        then
+            debugmsg "Change wallpaper location"
+            myf=1
+            wallflag=1
+        fi
+
+        if [ "$arg" = "-delay" ]
+        then
+            debugmsg "Checking -delay ##"
+            myf=1
+            sec=1
+        fi
+
+        if [ "$arg" = "-force" ]
+        then
+            debugmsg "Checking -force #"
+            force_flag=1
+            myf=1
+        fi
+
+        if [ "$arg" = "-max" ]
+        then
+            debugmsg "Checking -max ##"
+            myf=1
+            mfd=1
+        fi
+
+        if [ "$arg" = "-runxml" ]
+        then
+            debugmsg "Checking -runxml <file>"
+            myf=1
+            rxm=1
+        fi
+        if [ "$arg" = "-xmlfile" ]
+        then
+            debugmsg "Checking for -xmlfile "
+            myf=1
+            xfl=1
+        fi
+
+        if [ $myf = 1 ]
+        then 
+            debugmsg "Check sub-argument"
+            if [ $wallflag = 1 ] && [ "$arg" != "-wall" ]
+            then 
+                debugmsg "Changing Wallpaper location: $_WALLPAPER_DIRECTORY"
+                _WALLPAPER_DIRECTORY="$arg"
+                wallflag=0
+                defaultflag=1 #
+                noreq=0       # its a good argument
+                debugmsg "New value: $_WALLPAPER_DIRECTORY"
+	            numarg=$[$numarg-1]
+            fi
+            if [ $rxm = 1 ] && [ "$arg" != "-runxml" ]
+            then 
+                debugmsg "Running XML file"
+                runfile="$arg"
+                rxm=0
+                noreq=0       # its a good argument
+                debugmsg "New value: $runfile"
+		        bXML="$dir/$runfile"
+                [[ -f $bXML ]] && runXML || error 3
+            fi
+        if [ $force_flag = 1 ] && [ "$arg" != "-force" ]
+            then
+                #check if number
+                debugmsg "Checking if is number"
+                case "$arg" in
+                    *[!0-9]*) 
+                        error 4 #expection number
+                    ;;
+                    *)  
+                        debugmsg "OK, call -force $arg is strictly numeric"
+                        debugmsg "Changing from: $FORCE_TO"
+                        FORCE_TO=$arg
+                        #check if .lt 2
+                        [[ "$FORCE_TO" -gt 3 ]] && error 5
+                        force_flag=0
+                        noreq=0     # its a good argument
+                        debugmsg "new value: $FORCE_TO"
+      			        numarg=$[$numarg-2]
+                    ;;
+                esac
+            fi
+            
+            if [ $sec = 1 ] && [ "$arg" != "-delay" ]
+            then
+                #check if number
+                debugmsg "Checking if is a number"
+                case "$arg" in
+                    *[!0-9]*) 
+                        error 4 #expecting number
+                    ;;
+                    *)  
+                        debugmsg "OK, call -delay $arg is strictly numeric"
+                        debugmsg "Changing seconds from: $seconds"
+                        seconds="$arg"
+                        sec=0
+                        noreq=0     # its a good argument
+                        debugmsg "New value: $seconds"
+      				    numarg=$[$numarg-2]
+                    ;;
+                esac
+            fi
+            if [ "$mfd" = "1" ] && [ "$arg" != "-max" ]
+            then
+                #check if number
+                debugmsg "Checking if is a number"
+                case "$arg" in
+                    *[!0-9]*) 
+                        error 4   #expecting number
+                    ;;
+                    *)  
+                        debugmsg "OK, call -max $arg is strictly numeric"
+                        debugmsg "Changing Max. Num Files from: $dmax"
+                        dmax="$arg"
+                        mfd=0
+                        noreq=0     # its a good argument
+                        debugmsg "New value: $dmax"
+      		            numarg=$[$numarg-2]
+                    ;;
+                esac
+            fi
+            if [ $xfl = 1 ] && [ "$arg" != "-xmlfile" ]
+            then
+                debugmsg "Changing XML file from: $xml"
+                xml="$arg"
+                xfl=0
+                noreq=0     # its a good argument
+                debugmsg "New value: $xml"
+	            numarg=$[$numarg-1]
+            fi
+        fi
+        keep=0
+    done
+    debugmsg "Checking syntaxis"
+    [[ $numarg != 0 ]] && debugmsg "There is $numarg arguments not reconized"
+    [[ $hos = 1 || $noreq = 1 || $sec = 1 || $rxm = 1 ]] && syntax=1 || syntax=0
+    if [ $syntax != 0 ]
+    then
+        debugmsg "Receive syntax error flag, aborting."
+        error 6 #unreconize argument
+    fi
+    keep=0
+else
+    verbose "Using defaults."
+fi
+verbose "Launching `basename $0` with..."
+verbose "                PID: $pid ( $USER )"
+verbose "                pwd: $dir"
+#verbose "          URI: $http_string"
+verbose "            Seconds: $seconds"
+verbose "                XML: $xml"
+verbose "Wallpaper directory: $_WALLPAPER_DIRECTORY"
+
+#verbose "Accumulative : $accumulative"    
+
+# ** READ ** READ ** READ ** READ ** READ **
+# if you see the next lines is becouse at the time i release this
+# version i forget to comment out my testing enviroment.
+# 
+# in order for this script to work
+# MUST COMMENT the next 7 lines.
+#echo "**************************************************"
+#echo "** In order for this script to work CORRECTLY   **"
+#echo "** you MUST edit and comment out this 7 lines!! **"
+#echo "**************************************************"
+#accumulative=1
+#download=0
+
+# check if _WALLPAPER_DIRECTORY exist, if not create one.
+[[ ! -d $_WALLPAPER_DIRECTORY ]] && mkdir `echo $_WALLPAPER_DIRECTORY`
+
+# make _TEMP_DIRECTORY directory
+
+if [ $download = 1 ]
+then
+    #check for _TEMP_DIRECTORY dir. if not exist create one.
+    [[ ! -d $_TEMP_DIRECTORY ]] && mkdir `echo $_TEMP_DIRECTORY`
+    #chdir to _TEMP_DIRECTORY directory
+    [[ -d $_TEMP_DIRECTORY ]] && cd $_TEMP_DIRECTORY
+
+    # get new files from last posts from flickr.com
+    if [ $defaultflag = 0 ]
+    then
+	    a=0 #set counter.
+        #random get either google or flickr
+        [[ $FORCE_TO = 0 ]] && verbose "Selecting Random location..."
+
+        which_one=$[$RANDOM%3]
+        search_engine=$[$which_one+1]
+
+        # if forcing, then forced
+        [[ $FORCE_TO = 1 ]] && search_engine=1  ## google
+        [[ $FORCE_TO = 2 ]] && search_engine=2  ## flickr 
+        [[ $FORCE_TO = 3 ]] && search_engine=3  ## deviart
+
+        #check if lynx, wget installed
+        iflynx="`which lynx`"
+        ifwget="`which wget`"
+
+        #if is not, try wget
+        [[ $iflynx = "" ]] && search_engine=1 ##force Google
+
+        #if is not, try lynx
+        [[ $ifwget = "" ]] && search_engine=1 ##force Flickr
+
+        #if either installed halt with error
+        [[ ! $ifwget && ! $iflynx ]] && error 7 #this program needs wget and/or lynx
+
+        [[ "$search_engine" = "1" ]] && verbose "Using Google"
+        [[ "$search_engine" = "2" ]] && verbose "Using Flickr"
+        [[ "$search_engine" = "3" ]] && verbose "Using DevianArt"
+
+        #[[ ! `ping -c1 -W2 www.google.com >/dev/null 2>&1` ]] && error 8 #not connected
+
+        case $search_engine in
+        1) 
+                ##google
+                ## credit to Cousteau from freenode #ubuntu-es
+                # he figure out this way :)
+                for (( i=0; i < "$dmax"; i++ ))
+                        do
+
+                        wgettmp="`wget -O- -U "" "http://images.google.com/images?imgsz=xxlarge&hl=es&q=wallpaper&sa=N&start=$(($RANDOM%700+100))&ndsp=10" --quiet | grep -oe 'http://[^"]*\.jpg' | head -1`"
+
+                        [[ $wgettmp != "" ]] && wget $wgettmp || verbose "Error fetching $[$i+1], skip."
+	            done
+                #now remove duplicates
+        ;;
+        2)
+                ##flickr
+                for i in `lynx -dump -image-links "$http_string" | grep http://farm4.static | cut -c 7-63`
+                do 
+	                    a=$(($a+1))
+	                    if [ $a -lt $(($dmax+1)) ]
+	                    then 
+	                            [[ $i != "" ]] && wget $i || verbose "Error fetching $[$i+1] from flickr, skip."   #only in case did pass ping to google
+	                    fi
+                done
+        ;;  
+        3)
+                #deviantart
+                for i in `lynx -dump "http://browse.deviantart.com/?q=wallpaper&offset=$(($RANDOM%1000+1000))"|grep http://|cut -f 4 -d ' '`;do page=$(echo "$i" | grep Wallpaper | grep http);[[ "$page" != "" ]] && (wget -U "" `wget "$page" -qO- -U "" | tr -d '\n' | sed -r 's/^.*"src":"[^"]*\\/([^"]*)".*"deviationid":"([^"]*)".*$/http\\:\\/\\/www.deviantart.com\\/download\\/\2\\/\1/' | sed 's/\\\\\\//\\//g'` || wget -U "" `wget "$page" -qO- -U "" | tr -d '\n' | sed -r 's/^.*"src":"(http\\:\\\\\\/\\\\\\/fc[^"]*)".*$/\1/' | sed 's/\\\\\\//\\//g'` );done
+        ;;
+      esac
+    fi
+fi
+
+# once we download everything now
+# copy everything to working directory
+# this make sure there is no waiting time as the wallpapers are
+# downloading from our website
+
+
+if [ $download = 1 ]
+then
+    cd ..
+    # copy _TEMP_DIRECTORY files to working folder.
+    rm $_TEMP_DIRECTORY/*.1
+    cp $_TEMP_DIRECTORY/* $_WALLPAPER_DIRECTORY/
+    # erase _TEMP_DIRECTORY folder
+    [[ -d $_TEMP_DIRECTORY ]] && rm -rf $_TEMP_DIRECTORY
+fi
+
+# Build everything.
+i=0
+string=""
+bXML="$dir/$xml"
+buildXML
+verbose "XML in $bXML"
+runXML
+
+# vim:set shiftwidth=8 tabstop=4 expandtab textwidth=79:
