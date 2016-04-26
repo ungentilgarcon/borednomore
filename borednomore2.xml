@@ -1,0 +1,411 @@
+<!-- papershifter - 0.0.2b -->
+<!-- TimeStamp: 1459798285   -->
+<!--      User: goonieb         -->
+<!--                         -->
+<background>
+ <starttime>
+  <year>2016</year>
+  <month>04</month>
+  <day>04</day>
+  <hour>0</hour>
+  <minute>0</minute>
+  <second>01</second>
+ </starttime>
+
+
+ <!-- wallpaper 1 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/sarah.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/sarah.jpg</from>
+   <to>/home/goonieb/Images/Capture d'écran de 2015-05-19 22:35:09.jpg</to>
+  </transition>
+
+ <!-- wallpaper 2 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/Capture d'écran de 2015-05-19 22:35:09.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/Capture d'écran de 2015-05-19 22:35:09.jpg</from>
+   <to>/home/goonieb/Images/fred.jpg</to>
+  </transition>
+
+ <!-- wallpaper 3 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/fred.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/fred.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150713_114646.jpg</to>
+  </transition>
+
+ <!-- wallpaper 4 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150713_114646.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150713_114646.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150713_191846.jpg</to>
+  </transition>
+
+ <!-- wallpaper 5 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150713_191846.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150713_191846.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150713_191954.jpg</to>
+  </transition>
+
+ <!-- wallpaper 6 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150713_191954.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150713_191954.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150713_192105.jpg</to>
+  </transition>
+
+ <!-- wallpaper 7 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150713_192105.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150713_192105.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150713_192347.jpg</to>
+  </transition>
+
+ <!-- wallpaper 8 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150713_192347.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150713_192347.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150713_192358.jpg</to>
+  </transition>
+
+ <!-- wallpaper 9 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150713_192358.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150713_192358.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150713_192420.jpg</to>
+  </transition>
+
+ <!-- wallpaper 10 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150713_192420.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150713_192420.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150713_210024.jpg</to>
+  </transition>
+
+ <!-- wallpaper 11 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150713_210024.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150713_210024.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150714_205209.jpg</to>
+  </transition>
+
+ <!-- wallpaper 12 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150714_205209.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150714_205209.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150715_172439.jpg</to>
+  </transition>
+
+ <!-- wallpaper 13 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150715_172439.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150715_172439.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150715_172447.jpg</to>
+  </transition>
+
+ <!-- wallpaper 14 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150715_172447.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150715_172447.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150715_174131.jpg</to>
+  </transition>
+
+ <!-- wallpaper 15 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150715_174131.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150715_174131.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150715_174401.jpg</to>
+  </transition>
+
+ <!-- wallpaper 16 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150715_174401.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150715_174401.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150716_192608.jpg</to>
+  </transition>
+
+ <!-- wallpaper 17 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150716_192608.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150716_192608.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150720_030638.jpg</to>
+  </transition>
+
+ <!-- wallpaper 18 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150720_030638.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150720_030638.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150720_030653.jpg</to>
+  </transition>
+
+ <!-- wallpaper 19 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150720_030653.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150720_030653.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150720_031005.jpg</to>
+  </transition>
+
+ <!-- wallpaper 20 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150720_031005.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150720_031005.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150720_154158.jpg</to>
+  </transition>
+
+ <!-- wallpaper 21 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150720_154158.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150720_154158.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150724_123537.jpg</to>
+  </transition>
+
+ <!-- wallpaper 22 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150724_123537.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150724_123537.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150724_123604.jpg</to>
+  </transition>
+
+ <!-- wallpaper 23 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150724_123604.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150724_123604.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150724_174813.jpg</to>
+  </transition>
+
+ <!-- wallpaper 24 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150724_174813.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150724_174813.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150724_175141.jpg</to>
+  </transition>
+
+ <!-- wallpaper 25 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150724_175141.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150724_175141.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150724_175637.jpg</to>
+  </transition>
+
+ <!-- wallpaper 26 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150724_175637.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150724_175637.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150724_175639.jpg</to>
+  </transition>
+
+ <!-- wallpaper 27 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150724_175639.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150724_175639.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150724_175652.jpg</to>
+  </transition>
+
+ <!-- wallpaper 28 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150724_175652.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150724_175652.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150724_175705.jpg</to>
+  </transition>
+
+ <!-- wallpaper 29 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150724_175705.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150724_175705.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150728_201722.jpg</to>
+  </transition>
+
+ <!-- wallpaper 30 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150728_201722.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150728_201722.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150728_202517.jpg</to>
+  </transition>
+
+ <!-- wallpaper 31 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150728_202517.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150728_202517.jpg</from>
+   <to>/home/goonieb/Images/IMG_20150730_144240.jpg</to>
+  </transition>
+
+ <!-- wallpaper 32 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/IMG_20150730_144240.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/IMG_20150730_144240.jpg</from>
+   <to>/home/goonieb/Images/Sans titre-159.jpg</to>
+  </transition>
+
+ <!-- wallpaper 33 -->
+  <static>
+   <duration>90</duration>
+   <file>/home/goonieb/Images/Sans titre-159.jpg</file>
+  </static>
+
+  <transition type="overlay">
+   <duration>30</duration>
+   <from>/home/goonieb/Images/Sans titre-159.jpg</from>
+   <to>/home/goonieb/Images/sarah.jpg</to>
+  </transition>
+</background>
